@@ -3,7 +3,11 @@ VulntoES
 
 Vulnerability Data in ES
 
-This small python script will ingest several different types of vulnerability/port scanners and import that data into Elasticsearch. Right now it only supports Nessus. 
+This small python script will ingest several different types of vulnerability/port scanners and import that data into Elasticsearch. Right now it supports:
+ - Nessus
+ - Nikto
+ - Nmap
+ - Openvas 
 
 The script creates a python dict from a vulnerability scanner output. It converts that to JSON and inserts that document into Elasticsearch. 
 
