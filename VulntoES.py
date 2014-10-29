@@ -18,31 +18,31 @@ import re
 
 
 class NessusES:
-	"This clas will parse an Nessus v2 XML file and send it to Elasticsearch"
-	
+	"This class will parse an Nessus v2 XML file and send it to Elasticsearch"
+
 	def __init__(self, input_file,es_ip):
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
 		self.es = Elasticsearch([{'host':es_ip}])
-		
-		
+
+
 	def displayInputFileName(self):
 		print self.input_file
-		
+
 	def __importXML(self):
 		#Parse XML directly from the file path
 		return xml.parse(self.input_file)
-		
+
 	def toES(self):
 		"Returns a dict of dictionaries for each issue in the report"
 		#Nessus root node only has 2 children. policy and report, we grab report here
 		report = self.root.getchildren()[1]
 		dict_item={}
 		#each child node of report is a report host - rh
-		for rh in report:		
+		for rh in report:
 			ip = rh.attrib['name']
-			host_item={}	
+			host_item={}
 			#print rh.tag
 			#iterate through attributes of ReportHost tags
 			for tag in rh.getchildren():
@@ -116,25 +116,25 @@ class NessusES:
 							dict_item[child.tag] = child.text
 						if child.tag == 'plugin_type':
 							dict_item[child.tag] = child.text
-				self.es.index(index="vulns",doc_type="vuln", body=json.dumps(dict(host_item.items()+dict_item.items())))	
+				self.es.index(index="vulns",doc_type="vuln", body=json.dumps(dict(host_item.items()+dict_item.items())))
 
 
 class NmapES:
-	"This clas will parse an Nmap XML file and send data to Elasticsearch"
-	
+	"This class will parse an Nmap XML file and send data to Elasticsearch"
+
 	def __init__(self, input_file,es_ip):
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
 		self.es = Elasticsearch([{'host':es_ip}])
-		
+
 	def displayInputFileName(self):
 		print self.input_file
-		
+
 	def __importXML(self):
 		#Parse XML directly from the file path
 		return xml.parse(self.input_file)
-		
+
 	def toES(self):
 		"Returns a list of dictionaries (only for open ports) for each host in the report"
 		for h in self.root.iter('host'):
@@ -152,33 +152,33 @@ class NmapES:
 					for port in c.getchildren():
 						dict_itemb = {}
 						if port.tag == 'port':
-							dict_item['port'] = port.attrib['portid']							
-							dict_item['protocol'] = port.attrib['protocol']							
+							dict_item['port'] = port.attrib['portid']
+							dict_item['protocol'] = port.attrib['protocol']
 							for p in port.getchildren():
 								if p.tag == 'state':
 									dict_item['state'] = p.attrib['state']
 								elif p.tag == 'service':
-									dict_item['service'] = p.attrib['name']									
+									dict_item['service'] = p.attrib['name']
 							if dict_item['state'] == 'open':
 								#Only sends document to ES if the port is open
 								self.es.index(index="vulns",doc_type="vuln", body=json.dumps(dict_item))
 
 class NiktoES:
-	"This clas will parse an Nikto XML file and create an object"
-	
+	"This class will parse an Nikto XML file and create an object"
+
 	def __init__(self, input_file,es_ip):
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
 		self.es = Elasticsearch([{'host':es_ip}])
-		
+
 	def displayInputFileName(self):
 		print self.input_file
-		
+
 	def __importXML(self):
 		#Parse XML directly from the file path
 		return xml.parse(self.input_file)
-		
+
 	def toES(self):
 		"Sends each item to Elasticsearch as a unique document"
 		for item in self.root.iter('item'):
@@ -201,27 +201,30 @@ class NiktoES:
 				elif c.tag == 'iplink':
 					regex = re.compile("((?:[0-9]{1,3}\.){3}[0-9]{1,3})")
 					dict_item['srcip'] = regex.search(c.text).groups()[0]
-			self.es.index(index="vulns",doc_type="vuln", body=json.dumps(dict_item))		
+			self.es.index(index="vulns",doc_type="vuln", body=json.dumps(dict_item))
 
 
 class OpenVasES:
-	"This clas will parse an OpenVAS XML file and send it to Elasticsearch"
-	
+	"This class will parse an OpenVAS XML file and send it to Elasticsearch"
+
 	def __init__(self, input_file,es_ip):
 		self.input_file = input_file
+                self.displayInputFileName()
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
 		self.issueList = self.__createIssuesList()
 		self.portList = self.__createPortsList()
 		self.es = Elasticsearch([{'host':es_ip}])
-		
+
 	def displayInputFileName(self):
 		print self.input_file
-		
+
 	def __importXML(self):
 		#Parse XML directly from the file path
+                self.displayInputFileName()
 		return xml.parse(self.input_file)
-		
+                self.displayInputFileName()
+
 	def __createIssuesList(self):
 		"Returns a list of dictionaries for each issue in the report"
 		issuesList = [];
@@ -235,18 +238,26 @@ class OpenVasES:
 				issueDict['oid'] = unicode(nvt.attrib['oid'])
 				for child in nvt:
 					issueDict[child.tag] = unicode(child.text)
-			
+
 			if result.find('description') is not None:
 				issueDict['description'] = unicode(result.find('description').text)
+			if result.find('port') is not None:
+				issueDict['port'] = unicode(result.find('port').text)
+			if result.find('threat') is not None:
+				issueDict['threat'] = unicode(result.find('threat').text)
+			if result.find('severity') is not None:
+				issueDict['severity'] = unicode(result.find('severity').text)
+			if result.find('scan_nvt_version') is not None:
+                            issueDict['scan_nvt_version'] = unicode(result.find('scan_nvt_version').text)
 			if issueDict:
 				issuesList.append(issueDict)
-		
+
 		#for x in issuesList:
 		#	print x['description']
 		return issuesList
-		
-		
-	
+
+
+
 	def __createPortsList(self):
 		"Returns a list of dictionaries for each ports in the report"
 		portsList = [];
@@ -258,16 +269,16 @@ class OpenVasES:
 					d = self.parsePort(port.text)
 					#print d['service']
 					if port.find('host').text is not None: portDict['ip'] = port.find('host').text
-					if d != None: 
+					if d != None:
 						portDict['service'] = d['service']
 						portDict['port'] = d['port']
 						portDict['protocol'] = d['protocol']
 						portsList.append(portDict)
-					
-			
-			
+
+
+
 		return portsList
-		
+
 	def parsePort(self,string):
 		fieldsDict={};
 		portsParsed = re.search(r'(\S*\b)\s\((\d+)\/(\w+)',string)
@@ -280,8 +291,8 @@ class OpenVasES:
 			#print fieldsDict
 			return fieldsDict
 		return None
-		
-	
+
+
 	def toES(self):
 		for item in self.issueList:
 			self.es.index(index="vulns",doc_type="vuln", body=json.dumps(item))
@@ -304,7 +315,7 @@ def main():
 	in_file = ''
 	es_ip = ''
 	report_type = ''
-	
+
 	for o,p in opts:
 	  if o in ['-i','--input-file=']:
 		in_file = p
@@ -316,17 +327,17 @@ def main():
 		 usage()
 		 sys.exit()
 
-	
+
 	if (len(sys.argv) < 1):
 		usage()
 		sys.exit()
-	
+
 	try:
 		with open(in_file) as f: pass
 	except IOError as e:
 		print "Input file does not exist. Exiting."
 		sys.exit()
-	
+
 	if report_type.lower() == 'nessus':
 		print "Sending Nessus data to Elasticsearch"
 		np = NessusES(in_file,es_ip)
@@ -343,7 +354,7 @@ def main():
 		np = OpenVasES(in_file,es_ip)
 		np.toES()
 	else:
-		print "Error: Invalid report type specified. Available options: nessus, nikto, nmap"
+		print "Error: Invalid report type specified. Available options: nessus, nikto, nmap, openvas"
 		sys.exit()
 
 if __name__ == "__main__":
