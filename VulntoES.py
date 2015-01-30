@@ -52,6 +52,8 @@ class NessusES:
 					for child in tag.getchildren():
 						if child.attrib['name'] == 'HOST_END':
 							host_item['time'] = child.text
+							host_item['time'] = datetime.strptime(host_item['time'], '%a %b %d %H:%M:%S %Y')
+							host_item['time'] = datetime.strftime(host_item['time'], '%Y-%m-%dT%H:%M:%S.000%z')
 						if child.attrib['name'] == 'operating-system':
 							host_item['operating-system'] = child.text
 						if child.attrib['name'] == 'mac-address':
