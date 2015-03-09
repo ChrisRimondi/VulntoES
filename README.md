@@ -9,6 +9,6 @@ This small python script will ingest several different types of vulnerability/po
  - Nmap
  - Openvas 
 
-The script creates a python dict from a vulnerability scanner output. It converts that to JSON and inserts that document into Elasticsearch. 
+The script creates a python dict from a vulnerability scanner output. It converts that to JSON and inserts that document into Elasticsearch.
 
-"Usage: VulntoES.py [-i input_file | input_file=input_file] [-e elasticsearch_ip | es_ip=es_ip_address] [-r report_type | --report_type=type] [-h | --help]"
+"Usage: VulntoES.py [-i input_file | input_file=input_file] [-I index_name | index_name=index_name] [-e elasticsearch_ip | es_ip=es_ip_address] [-r report_type | --report_type=type] [-h | --help]"
