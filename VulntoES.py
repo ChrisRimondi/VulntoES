@@ -24,7 +24,7 @@ class NessusES:
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
-		self.es = Elasticsearch([{'host':es_ip}])
+		self.es = Elasticsearch([es_ip])
 		self.index_name = index_name
 
 
@@ -52,6 +52,9 @@ class NessusES:
 					for child in tag.getchildren():
 						if child.attrib['name'] == 'HOST_END':
 							host_item['time'] = child.text
+							print host_item['time']
+							host_item['time'] = datetime.strptime(host_item['time'], '%a %b %d %H:%M:%S %Y')
+							host_item['time'] = datetime.strftime(host_item['time'], '%Y-%m-%dT%H:%M:%S.000Z')
 						if child.attrib['name'] == 'operating-system':
 							host_item['operating-system'] = child.text
 						if child.attrib['name'] == 'mac-address':
