@@ -144,6 +144,10 @@ class NmapES:
 		for h in self.root.iter('host'):
 			dict_item = {}
 			dict_item['scanner'] = 'nmap'
+			if h.tag == 'host':
+				if h.attrib['endtime']:
+					dict_item['time'] = time.strftime('%a %b %d %H:%M:%S %Y', time.gmtime(float(h.attrib['endtime'])))
+			
 			for c in h:
 				if c.tag == 'address':
 					if c.attrib['addr']:
@@ -163,6 +167,10 @@ class NmapES:
 									dict_item['state'] = p.attrib['state']
 								elif p.tag == 'service':
 									dict_item['service'] = p.attrib['name']
+								elif p.tag == 'script':
+									if p.attrib['id']:
+										if p.attrib['output']:
+											dict_item[p.attrib['id']] = p.attrib['output']									
 							if dict_item['state'] == 'open':
 								#Only sends document to ES if the port is open
 								self.es.index(index=self.index_name,doc_type="vuln", body=json.dumps(dict_item))
