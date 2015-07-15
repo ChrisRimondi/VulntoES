@@ -1,209 +1,71 @@
 {
-  "title": "Vulnerabilities",
+  "title": "VulntoES",
   "services": {
     "query": {
       "list": {
         "0": {
-          "query": "",
-          "alias": "",
+          "query": "risk_factor: Low",
+          "alias": "Low",
           "color": "#7EB26D",
           "id": 0,
-          "pin": false,
+          "pin": true,
           "type": "lucene",
           "enable": true
+        },
+        "1": {
+          "id": 1,
+          "color": "#EAB839",
+          "alias": "Medium",
+          "pin": true,
+          "type": "lucene",
+          "enable": true,
+          "query": "risk_factor: Medium"
+        },
+        "2": {
+          "id": 2,
+          "color": "#E0F9D7",
+          "alias": "",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "risk_factor: None"
+        },
+        "3": {
+          "id": 3,
+          "color": "#EF843C",
+          "alias": "High",
+          "pin": true,
+          "type": "lucene",
+          "enable": true,
+          "query": "risk_factor: High"
+        },
+        "4": {
+          "id": 4,
+          "color": "#E24D42",
+          "alias": "Critical",
+          "pin": true,
+          "type": "lucene",
+          "enable": true,
+          "query": "risk_factor: Critical"
         }
       },
       "ids": [
-        0
+        0,
+        1,
+        2,
+        3,
+        4
       ]
     },
     "filter": {
-      "list": {
-        "0": {
-          "from": "2013-01-01T20:34:10.315Z",
-          "to": "now",
-          "type": "time",
-          "field": "time",
-          "mandate": "must",
-          "active": true,
-          "alias": "",
-          "id": 0
-        }
-      },
-      "ids": [
-        0
-      ]
+      "list": {},
+      "ids": []
     }
   },
   "rows": [
     {
-      "title": "Graph",
-      "height": "250px",
-      "editable": true,
-      "collapse": false,
-      "collapsable": true,
-      "panels": [
-        {
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "group": [
-            "default"
-          ],
-          "type": "terms",
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ]
-          },
-          "field": "risk_factor",
-          "exclude": [
-            "none"
-          ],
-          "missing": false,
-          "other": false,
-          "size": 100,
-          "order": "count",
-          "style": {
-            "font-size": "10pt"
-          },
-          "donut": false,
-          "tilt": false,
-          "labels": true,
-          "arrangement": "horizontal",
-          "chart": "pie",
-          "counter_pos": "none",
-          "title": "Risk Factors",
-          "spyable": true,
-          "tmode": "terms",
-          "tstat": "total",
-          "valuefield": ""
-        },
-        {
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "group": [
-            "default"
-          ],
-          "type": "terms",
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ]
-          },
-          "field": "ip",
-          "exclude": [],
-          "missing": false,
-          "other": false,
-          "size": 25,
-          "order": "count",
-          "style": {
-            "font-size": "10pt"
-          },
-          "donut": false,
-          "tilt": false,
-          "labels": true,
-          "arrangement": "horizontal",
-          "chart": "table",
-          "counter_pos": "above",
-          "spyable": true,
-          "title": "Hosts",
-          "tmode": "terms",
-          "tstat": "total",
-          "valuefield": ""
-        },
-        {
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "type": "terms",
-          "loadingEditor": false,
-          "field": "pluginFamily",
-          "exclude": [],
-          "missing": false,
-          "other": false,
-          "size": 10,
-          "order": "count",
-          "style": {
-            "font-size": "10pt"
-          },
-          "donut": false,
-          "tilt": false,
-          "labels": true,
-          "arrangement": "horizontal",
-          "chart": "bar",
-          "counter_pos": "above",
-          "spyable": true,
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ]
-          },
-          "tmode": "terms",
-          "tstat": "total",
-          "valuefield": "",
-          "title": "Plugin Families"
-        }
-      ],
-      "notice": false
-    },
-    {
-      "title": "Events",
-      "height": "650px",
-      "editable": true,
-      "collapse": false,
-      "collapsable": true,
-      "panels": [
-        {
-          "error": false,
-          "span": 12,
-          "editable": true,
-          "group": [
-            "default"
-          ],
-          "type": "table",
-          "size": 100,
-          "pages": 5,
-          "offset": 0,
-          "sort": [
-            "cvss_base",
-            "desc"
-          ],
-          "style": {
-            "font-size": "9pt"
-          },
-          "overflow": "min-height",
-          "fields": [],
-          "highlight": [],
-          "sortable": true,
-          "header": true,
-          "paging": true,
-          "spyable": true,
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ]
-          },
-          "field_list": true,
-          "status": "Stable",
-          "trimFactor": 300,
-          "normTimes": true,
-          "title": "Documents",
-          "all_fields": false,
-          "localTime": false,
-          "timeField": "@timestamp"
-        }
-      ],
-      "notice": false
-    },
-    {
-      "title": "Time",
-      "height": "150px",
+      "title": "Histogram",
+      "height": "180px",
       "editable": true,
       "collapse": false,
       "collapsable": true,
@@ -225,9 +87,12 @@
             "min": 0
           },
           "queries": {
-            "mode": "all",
+            "mode": "pinned",
             "ids": [
-              0
+              0,
+              1,
+              3,
+              4
             ]
           },
           "annotate": {
@@ -242,7 +107,7 @@
           },
           "auto_int": false,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "1M",
           "intervals": [
             "auto",
             "1s",
@@ -257,13 +122,13 @@
             "1w",
             "1y"
           ],
-          "lines": false,
-          "fill": 0,
+          "lines": true,
+          "fill": 3,
           "linewidth": 3,
           "points": false,
           "pointradius": 5,
           "bars": false,
-          "stack": true,
+          "stack": false,
           "spyable": true,
           "zoomlinks": true,
           "options": true,
@@ -273,14 +138,392 @@
           "legend_counts": true,
           "timezone": "browser",
           "percentage": false,
-          "zerofill": false,
+          "zerofill": true,
           "derivative": false,
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": true
+          }
+        }
+      ],
+      "notice": false
+    },
+    {
+      "title": "Graph",
+      "height": "340px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "fqdn.raw",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 11,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
           },
-          "title": "Histogram",
-          "scaleSeconds": true
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "vertical",
+          "chart": "table",
+          "counter_pos": "below",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Hosts"
+        },
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "operating-system.raw",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Operating System"
+        },
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "pluginFamily.raw",
+          "exclude": [
+            ""
+          ],
+          "missing": false,
+          "other": true,
+          "size": 15,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Plugin Family"
+        },
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "risk_factor.raw",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "pie",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "pinned",
+            "ids": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Risk Factor"
+        }
+      ],
+      "notice": false
+    },
+    {
+      "title": "test",
+      "height": "240px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "svc_name.raw",
+          "exclude": [
+            ""
+          ],
+          "missing": true,
+          "other": true,
+          "size": 11,
+          "order": "term",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "vertical",
+          "chart": "table",
+          "counter_pos": "below",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "OWASP Top 10"
+        },
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "exploit_available",
+          "exclude": [],
+          "missing": false,
+          "other": true,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "pie",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Exploit Available"
+        },
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "port.raw",
+          "exclude": [
+            ""
+          ],
+          "missing": false,
+          "other": true,
+          "size": 5,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Ports"
+        },
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "_index",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "pie",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Scan Type"
+        }
+      ],
+      "notice": false
+    },
+    {
+      "title": "Table",
+      "height": "650px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "table",
+          "loadingEditor": false,
+          "size": 100,
+          "pages": 5,
+          "offset": 0,
+          "sort": [
+            "CVSSScore",
+            "desc"
+          ],
+          "overflow": "min-height",
+          "fields": [
+            "@timestamp",
+            "fqdn",
+            "operating-system",
+            "pluginName",
+            "pluginFamily",
+            "risk_factor",
+            "synopsis",
+            "svc_name"
+          ],
+          "highlight": [],
+          "sortable": true,
+          "header": true,
+          "paging": true,
+          "field_list": false,
+          "all_fields": true,
+          "trimFactor": 500,
+          "localTime": false,
+          "timeField": "@timestamp",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "style": {
+            "font-size": "9pt"
+          },
+          "normTimes": true
         }
       ],
       "notice": false
@@ -290,10 +533,10 @@
   "index": {
     "interval": "none",
     "pattern": "[logstash-]YYYY.MM.DD",
-    "default": "vulns",
+    "default": "testvuln-*",
     "warm_fields": true
   },
-  "style": "dark",
+  "style": "light",
   "failover": false,
   "panel_hints": true,
   "loader": {
@@ -318,9 +561,16 @@
       "query": "*",
       "pinned": true,
       "history": [
-        "",
-        "critical",
-        "*severity"
+        "risk_factor: Critical",
+        "risk_factor: High",
+        "risk_factor: None",
+        "risk_factor: Medium",
+        "risk_factor: Low",
+        "IssueSeverity: Low",
+        "IssueSeverity: Medium",
+        "IssueSeverity: Critical",
+        "*",
+        "risk_factor.raw: High"
       ],
       "remember": 10,
       "enable": true
@@ -347,7 +597,12 @@
         "24h",
         "2d",
         "7d",
-        "30d"
+        "30d",
+        "3M",
+        "6M",
+        "1y",
+        "3y",
+        "5y"
       ],
       "refresh_intervals": [
         "5s",
@@ -361,7 +616,7 @@
         "2h",
         "1d"
       ],
-      "timefield": "time",
+      "timefield": "@timestamp",
       "enable": true,
       "now": true,
       "filter_id": 0
