@@ -26,7 +26,26 @@ class NessusES:
 		self.root = self.tree.getroot()
 		self.es = Elasticsearch([es_ip])
 		self.index_name = index_name
-
+                vulnmapping = { "properties": {
+                            "pluginName": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "ip": { "type": "ip", "fields": {
+                                "raw": { "type": "ip", "index": "not_analyzed" } } },
+                            "port": { "type": "integer" },
+                            "pluginFamily": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "plugin_type": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "svc_name": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "svcid": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } }
+                            } }
+                mappings = { "mappings": { "vuln": vulnmapping } }
+                try:    # try to create index
+                    self.es.indices.create(index=index_name, body=json.dumps(mappings))
+                except: # if index exists: ensure mapping is created
+                    self.es.indices.put_mapping(index=index_name, doc_type="vuln", body=json.dumps(vulnmapping))
 
 	def displayInputFileName(self):
 		print self.input_file
@@ -53,7 +72,7 @@ class NessusES:
 						if child.attrib['name'] == 'HOST_END':
 							host_item['time'] = child.text
 							host_item['time'] = datetime.strptime(host_item['time'], '%a %b %d %H:%M:%S %Y')
-							host_item['time'] = datetime.strftime(host_item['time'], '%Y-%m-%dT%H:%M:%S.000Z')
+							host_item['time'] = datetime.strftime(host_item['time'], '%Y/%m/%d %H:%M:%S')
 						if child.attrib['name'] == 'operating-system':
 							host_item['operating-system'] = child.text
 						if child.attrib['name'] == 'mac-address':
@@ -64,7 +83,7 @@ class NessusES:
 				elif tag.tag == 'ReportItem':
 					dict_item['scanner'] = 'nessus'
 					if tag.attrib['port']:
-						dict_item['port'] = tag.attrib['port']
+						dict_item['port'] = int(tag.attrib['port'])
 					if tag.attrib['svc_name']:
 						dict_item['svc_name'] = tag.attrib['svc_name']
 					if tag.attrib['protocol']:
@@ -119,6 +138,21 @@ class NessusES:
 							dict_item[child.tag] = child.text
 						if child.tag == 'plugin_type':
 							dict_item[child.tag] = child.text
+                                try:
+                                    ip = host_item['ip']
+                                except KeyError:
+                                    ip = "-"
+
+                                try:
+                                    protocol = dict_item['protocol']
+                                except KeyError:
+                                    protocol = "-"
+
+                                try:
+                                    port = dict_item['port']
+                                except KeyError:
+                                    port = 0
+                                host_item['svcid'] = "%s/%s/%d" % (ip, protocol, port)
 				self.es.index(index=self.index_name,doc_type="vuln", body=json.dumps(dict(host_item.items()+dict_item.items())))
 
 
@@ -146,7 +180,7 @@ class NmapES:
 			dict_item['scanner'] = 'nmap'
 			if h.tag == 'host':
 				if h.attrib['endtime']:
-					dict_item['time'] = time.strftime('%a %b %d %H:%M:%S %Y', time.gmtime(float(h.attrib['endtime'])))
+					dict_item['time'] = time.strftime('%Y/%m/%d %H:%M:%S', time.gmtime(float(h.attrib['endtime'])))
 			
 			for c in h:
 				if c.tag == 'address':
