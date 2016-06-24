@@ -29,8 +29,8 @@ class NessusES:
                 vulnmapping = { "properties": {
                             "pluginName": { "type": "string", "fields": {
                                 "raw": { "type": "string", "index": "not_analyzed" } } },
-                            "ip": { "type": "ip", "fields": {
-                                "raw": { "type": "ip", "index": "not_analyzed" } } },
+                            "ip": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
                             "port": { "type": "integer" },
                             "pluginFamily": { "type": "string", "fields": {
                                 "raw": { "type": "string", "index": "not_analyzed" } } },
