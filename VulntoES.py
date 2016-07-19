@@ -32,6 +32,9 @@ class NessusES:
                                 "raw": { "type": "string", "index": "not_analyzed" } } },
                             "ip": { "type": "string", "fields": {
                                 "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "risk_factor": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "severity": { "type": "integer" },
                             "port": { "type": "integer" },
                             "pluginFamily": { "type": "string", "fields": {
                                 "raw": { "type": "string", "index": "not_analyzed" } } },
@@ -40,7 +43,11 @@ class NessusES:
                             "svc_name": { "type": "string", "fields": {
                                 "raw": { "type": "string", "index": "not_analyzed" } } },
                             "svcid": { "type": "string", "fields": {
-                                "raw": { "type": "string", "index": "not_analyzed" } } }
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "synopsis": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
+                            "solution": { "type": "string", "fields": {
+                                "raw": { "type": "string", "index": "not_analyzed" } } },
                             } }
                 mappings = { "mappings": { "vuln": vulnmapping } }
                 try:    # try to create index
