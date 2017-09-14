@@ -20,11 +20,11 @@ import re
 class NessusES:
 	"This class will parse an Nessus v2 XML file and send it to Elasticsearch"
 
-	def __init__(self, input_file,es_ip,index_name, static_fields):
+	def __init__(self, input_file,es_ip,es_port,index_name, static_fields):
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
-		self.es = Elasticsearch([es_ip])
+		self.es = Elasticsearch([{'host':es_ip,'port':es_port}])
 		self.index_name = index_name
                 self.static_fields = static_fields
                 vulnmapping = { "properties": {
@@ -171,11 +171,11 @@ class NessusES:
 class NmapES:
 	"This class will parse an Nmap XML file and send data to Elasticsearch"
 
-	def __init__(self, input_file,es_ip,index_name):
+	def __init__(self, input_file,es_ip,es_port,index_name):
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
-		self.es = Elasticsearch([{'host':es_ip}])
+		self.es = Elasticsearch([{'host':es_ip,'port':es_port}])
 		self.index_name = index_name
 
 	def displayInputFileName(self):
@@ -224,11 +224,11 @@ class NmapES:
 class NiktoES:
 	"This class will parse an Nikto XML file and create an object"
 
-	def __init__(self, input_file,es_ip,index_name):
+	def __init__(self, input_file,es_ip,es_port,index_name):
 		self.input_file = input_file
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
-		self.es = Elasticsearch([{'host':es_ip}])
+		self.es = Elasticsearch([{'host':es_ip,'port':es_port}])
 		self.index_name = index_name
 
 	def displayInputFileName(self):
@@ -266,14 +266,14 @@ class NiktoES:
 class OpenVasES:
 	"This class will parse an OpenVAS XML file and send it to Elasticsearch"
 
-	def __init__(self, input_file,es_ip,index_name):
+	def __init__(self, input_file,es_ip,es_port,index_name):
 		self.input_file = input_file
                 self.displayInputFileName()
 		self.tree = self.__importXML()
 		self.root = self.tree.getroot()
 		self.issueList = self.__createIssuesList()
 		self.portList = self.__createPortsList()
-		self.es = Elasticsearch([{'host':es_ip}])
+		self.es = Elasticsearch([{'host':es_ip,'port':es_port}])
 		self.index_name = index_name
 
 	def displayInputFileName(self):
@@ -361,11 +361,11 @@ class OpenVasES:
 
 
 def usage():
-		print "Usage: VulntoES.py [-i input_file | input_file=input_file] [-e elasticsearch_ip | es_ip=es_ip_address] [-I index_name] [-r report_type | --report_type=type] [-s name=value] [-h | --help]"
+		print "Usage: VulntoES.py [-i input_file | input_file=input_file] [-e elasticsearch_ip | es_ip=es_ip_address] [-p elasticsearch_port | es_port=es_server_port] [-I index_name] [-r report_type | --report_type=type] [-s name=value] [-h | --help]"
 def main():
 
-        letters = 'i:I:e:r:s:h' #input_file, index_name es_ip_address, report_type, create_sql, create_xml, help
-	keywords = ['input-file=', 'index_name=', 'es_ip=','report_type=', 'static=', 'help' ]
+        letters = 'i:I:e:p:r:s:h' #input_file, index_name es_ip_address, report_type, create_sql, create_xml, help
+	keywords = ['input-file=', 'index_name=', 'es_ip=','es_port=','report_type=', 'static=', 'help' ]
 	try:
 		opts, extraparams = getopt.getopt(sys.argv[1:], letters, keywords)
 	except getopt.GetoptError, err:
@@ -374,6 +374,7 @@ def main():
 		sys.exit()
 	in_file = ''
 	es_ip = ''
+	es_port = 9200
 	report_type = ''
 	index_name = ''
         static_fields = dict()
@@ -385,6 +386,8 @@ def main():
 	  	report_type = p
 	  elif o in ['-e', '--es_ip=']:
 	  	es_ip=p
+	  elif o in ['-p', '--es_port=']:
+		es_port=p
 	  elif o in ['-I', '--index_name=']:
 		index_name=p
           elif o in ['-s', '--static']:
@@ -407,18 +410,18 @@ def main():
 
 	if report_type.lower() == 'nessus':
 		print "Sending Nessus data to Elasticsearch"
-		np = NessusES(in_file,es_ip,index_name, static_fields)
+		np = NessusES(in_file,es_ip,es_port,index_name, static_fields)
 		np.toES()
 	elif report_type.lower() == 'nikto':
 		print "Sending Nikto data to Elasticsearch"
-		np = NiktoES(in_file,es_ip,index_name)
+		np = NiktoES(in_file,es_ip,es_port,index_name)
 		np.toES()
 	elif report_type.lower() == 'nmap':
 		print "Sending Nmap data to Elasticsearch"
-		np = NmapES(in_file,es_ip,index_name)
+		np = NmapES(in_file,es_ip,es_port,index_name)
 		np.toES()
 	elif report_type.lower() == 'openvas':
-		np = OpenVasES(in_file,es_ip,index_name)
+		np = OpenVasES(in_file,es_ip,es_port,index_name)
 		np.toES()
 	else:
 		print "Error: Invalid report type specified. Available options: nessus, nikto, nmap, openvas"
