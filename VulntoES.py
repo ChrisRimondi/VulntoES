@@ -213,6 +213,8 @@ class NmapES:
 									dict_item['state'] = p.attrib['state']
 								elif p.tag == 'service':
 									dict_item['service'] = p.attrib['name']
+                                                                        if p.attrib['banner']:
+                                                                            dict_item['banner'] = p.attrib['banner']
 								elif p.tag == 'script':
 									if p.attrib['id']:
 										if p.attrib['output']:
